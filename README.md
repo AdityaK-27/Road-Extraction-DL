@@ -1,138 +1,147 @@
-# Road-Extraction-DL
-Comparative analysis of deep learning models (U-Net, ResUNet, VGG16 U-Net, Self-Attention U-Net, Custom CNN) for road extraction from satellite imagery using the DeepGlobe dataset.
-# 🚧 Road Extraction from Satellite Imagery using Deep Learning
+# 🛰️ Road Extraction from Satellite Imagery using Deep Learning
 
-### 🔍 Semantic Segmentation with U-Net, ResUNet, VGG16 U-Net, Self-Attention U-Net, and Custom CNN
+_A Comparative Study of Multiple CNN Architectures on the DeepGlobe Dataset_
 
----
+## 📌 Project Overview
 
-## 📌 Overview
+This project presents a comprehensive implementation and comparative analysis of deep learning models for **road extraction from high-resolution satellite imagery**. The work focuses on **semantic segmentation** using five architectures:
 
-This project implements and compares five deep learning models for road extraction from high-resolution satellite imagery using semantic segmentation. It uses the **DeepGlobe Road Extraction** dataset and evaluates each model on both qualitative and quantitative metrics.
+- U-Net
+- Custom CNN
+- ResUNet
+- VGG16 U-Net (Transfer Learning)
+- Self-Attention U-Net
 
----
-
-## 🛰 Dataset
-
-- **Source:** DeepGlobe Road Extraction Dataset
-- **Images:** 6,208 RGB satellite images (JPEG)
-- **Masks:** Binary grayscale masks (PNG, road = 1, background = 0)
-- **Split:** 90% Training (5,600), 10% Validation (608)
-- **Preprocessing:**
-  - Resized to 256×256 using LANCZOS resampling
-  - Normalized to [0, 1]
-  - Custom data generator used for batching and augmentation
+The study is part of the Deep Learning course (BCSE332L) at **Vellore Institute of Technology, Chennai**, submitted in **April 2025**.
 
 ---
 
-## 🧠 Models Implemented
+## 📂 Dataset
 
-| Model                | Description                                                 |
-|---------------------|-------------------------------------------------------------|
-| **U-Net**            | Baseline encoder-decoder with skip connections              |
-| **Custom CNN**       | Lightweight architecture for faster training and inference  |
-| **ResUNet**          | Adds residual blocks for better gradient flow and edge detail |
-| **VGG16 U-Net**      | U-Net with pretrained VGG16 encoder for transfer learning   |
-| **Self-Attention U-Net** | Integrates attention to capture long-range spatial dependencies |
-
----
-
-## ⚙️ Training Configuration
-
-- **Environment:** Google Colab (TPU/GPU)
-- **Loss Function:** Binary Crossentropy (BCE), with Dice Loss for VGG16 in some runs
-- **Optimizers:** Adam, SGD
-- **Batch Sizes:** 4–16
-- **Epochs:** 8–50
-- **Callbacks Used:** `EarlyStopping`, `ReduceLROnPlateau`, `ModelCheckpoint`, `CSVLogger`
+**Dataset Used:** [DeepGlobe Road Extraction Dataset](https://www.kaggle.com/datasets/balraj98/deepglobe-road-extraction-dataset)  
+- 📸 RGB satellite images in JPEG format  
+- 🏷️ Corresponding binary road masks in PNG format  
+- 📊 Total: 6,208 samples  
+  - 5,600 for training  
+  - 608 for validation
 
 ---
 
-## 📊 Evaluation Metrics
+## 🧠 Model Architectures
 
-- **Primary:** Intersection over Union (IoU)
-- **Secondary:** Pixel Accuracy (used for trends only)
-
-| Model               | Epochs | Performance Summary                                  |
-|--------------------|--------|------------------------------------------------------|
-| U-Net              | 8      | Moderate segmentation with road discontinuities      |
-| Custom CNN         | 25     | Better continuity, some false positives              |
-| ResUNet            | 10     | Fragmented output due to undertraining               |
-| VGG16 U-Net        | 10     | Sharp edges but mild over-segmentation               |
-| Self-Attention U-Net | 25   | Most accurate and connected segmentation             |
+| Model               | Description |
+|--------------------|-------------|
+| **U-Net**           | Baseline encoder-decoder with skip connections |
+| **Custom CNN**      | Lightweight model built from scratch |
+| **ResUNet**         | U-Net enhanced with residual connections |
+| **VGG16 U-Net**     | U-Net decoder with a pretrained VGG16 encoder |
+| **Self-Attention U-Net** | U-Net with self-attention mechanism to capture global dependencies |
 
 ---
 
-## 🖼 Qualitative Analysis
+## ⚙️ Implementation Details
 
-Visual inspection of predictions was conducted using an unlabeled test set to assess:
-- Road continuity and connectivity
-- Edge sharpness
-- False positives and noise resilience
+- **Input Size:** 256x256 (or 224x224 for VGG16)  
+- **Normalization:** RGB images scaled to `[0, 1]`  
+- **Loss Function:** Binary Crossentropy (BCE), Dice Loss (optional)  
+- **Optimization:** Adam / SGD  
+- **Augmentation:** Applied during runtime via a custom data generator  
+- **Training Platform:** Google Colab (TPU/GPU enabled)  
 
-*(See `/results/` or report for outputs)*
+### 🧪 Training Setup
+
+| Model               | Batch Size | Epochs | Optimizer | Notes |
+|--------------------|------------|--------|-----------|-------|
+| U-Net              | 8          | 50     | Adam      | Baseline |
+| Custom CNN         | 16         | 40     | SGD       | Fast training |
+| ResUNet            | 8          | 30     | Adam      | Deeper network |
+| VGG16 U-Net        | 4          | 35     | Adam      | Transfer learning |
+| Self-Attention U-Net | 4        | 30     | Adam      | Highest accuracy |
 
 ---
 
-## 🔬 Comparative Summary
+## 📈 Evaluation Metrics
 
-✅ **Best Overall Performance:** Self-Attention U-Net  
-📌 **Observations:**
-- **Custom CNN**: Fast but less precise
-- **VGG16 U-Net**: High feature quality, prone to over-segmentation
-- **U-Net / ResUNet**: Need more epochs to improve
+- **Intersection over Union (IoU)** – Primary metric for segmentation accuracy
+- **Pixel-wise Accuracy** – Secondary metric (less reliable in imbalanced datasets)
 
 ---
 
-## 🔭 Future Work
+## 🖼️ Results
 
-- Incorporate transformer-based segmentation (e.g., SAM, Mask2Former)
-- Add CRF or graph-based post-processing
-- Deploy as a web app using Streamlit or Gradio
-- Explore ensembling methods
+### 🔢 Quantitative Evaluation
 
-## 📁 Project Structure
+| Model               | IoU (Trend) | Comments |
+|--------------------|-------------|----------|
+| U-Net              | Moderate    | Struggled with thin roads |
+| Custom CNN         | Fair        | Lightweight but prone to false positives |
+| ResUNet            | Moderate    | Better edges, limited by fewer epochs |
+| VGG16 U-Net        | High        | Sharp boundaries, slightly over-segmented |
+| Self-Attention U-Net | Excellent | Best road continuity and precision |
 
-```
-road-extraction-deep-learning/
+### 📸 Qualitative Insights
+- **U-Net:** Missed thinner roads  
+- **Custom CNN:** Occasionally confused non-road areas  
+- **ResUNet:** Incomplete road detection  
+- **VGG16 U-Net:** Very sharp edges, sometimes too eager  
+- **Self-Attention U-Net:** Precise and connected roads with long-range spatial awareness
+
+---
+
+## 🧾 Key Learnings
+
+- Self-attention improves global context understanding
+- Transfer learning boosts early-stage performance
+- Lightweight models are suitable for constrained environments but less accurate
+- Residual connections improve edge preservation
+
+---
+
+## 🚧 Limitations
+
+- Limited epochs for ResUNet & VGG16 U-Net due to resource constraints
+- No deployment or GIS integration (yet)
+- Evaluation limited to IoU and pixel accuracy
+
+---
+
+## 🚀 Future Work
+
+- Incorporate **Transformer-based segmentation models**
+- Post-processing with **Conditional Random Fields (CRF)**
+- **Model ensembling** for robust predictions
+- Real-time deployment with **GIS integration**
+
+---
+
+## 📁 Repository Structure
+
+```bash
+.
+├── models/
+│   ├── unet.ipynb
+│   ├── custom_cnn.ipynb
+│   ├── resunet.ipynb
+│   ├── vgg16_unet.ipynb
+│   └── self_attention_unet.ipynb
 ├── data/
-│   ├── train/                   # Training images and masks
-│   ├── val/                     # Validation images and masks
-│   └── test/                    # Test images (no ground truth)
-│
-├── models/                      # Model architecture scripts
-│   ├── unet.py
-│   ├── resunet.py
-│   ├── custom_cnn.py
-│   ├── vgg16_unet.py
-│   └── attention_unet.py
-│
-├── notebooks/                   # Jupyter notebooks for each model
-│   ├── train_unet.ipynb
-│   ├── train_resunet.ipynb
-│   ├── train_custom_cnn.ipynb
-│   ├── train_vgg16_unet.ipynb
-│   └── train_attention_unet.ipynb
-│
-├── utils/                       # Utility scripts (data loaders, metrics, etc.)
+│   ├── train/
+│   ├── val/
+│   └── test/
+├── utils/
 │   ├── data_generator.py
-│   └── metrics.py
-│
-├── results/                     # Output predictions and training logs
-│   ├── qualitative_outputs/     # Predicted masks from test images
-│   └── training_logs/           # CSV logs, model checkpoints
-│
-├── report/
-│   └── Road Extraction - Final Report.pdf
-│
+│   └── preprocessing.py
+├── results/
+│   ├── predictions/
+│   └── comparisons/
 ├── README.md
-└── requirements.txt             # (Optional) Python package list
+└── requirements.txt
 ```
+## 👨‍💻 Author
+- Aditya Kankarwal
+- 📍 Electronics and Computer Engineering
+- 🧑‍🎓 VIT Chennai | 22BLC1269
+- 📅 April 2025
 
-
-## 📄 Report & Resources
-
-- 📘 **[Download Final Report](./report/Road Extraction - Final Report.pdf)**  
-- 📂 Trained model weights: _[To be added if available]_  
-- 💻 Full code and notebooks for each model in `/notebooks/`
+- Special thanks to Ms. Suchita M (Deep Learning Faculty), and teammates Manan & Harsh for collaboration and support.
 
