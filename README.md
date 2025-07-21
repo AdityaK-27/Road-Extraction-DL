@@ -1,18 +1,53 @@
-# 🛰️ Road Extraction from Satellite Imagery using Deep Learning
+# 🛣️ Road Segmentation Analysis Platform
 
-_A Comparative Study of Multiple CNN Architectures on the DeepGlobe Dataset_
+A web-based application built to compare and visualize the performance of three deep learning models for **road extraction** from satellite images. This tool provides a hands-on experience for analyzing outputs from:
 
-## 📌 Project Overview
+- 🔹 U-Net  
+- 🔹 Custom CNN  
+- 🔹 Self-Attention U-Net
 
-This project presents a comprehensive implementation and comparative analysis of deep learning models for **road extraction from high-resolution satellite imagery**. The work focuses on **semantic segmentation** using five architectures:
+The application is hosted on **[Live Demo](https://huggingface.co/spaces/AdityaK-27/road-segmentation-app)** using **Gradio**.
 
-- U-Net
-- Custom CNN
-- ResUNet
-- VGG16 U-Net (Transfer Learning)
-- Self-Attention U-Net
+---
 
-The study is part of the Deep Learning course (BCSE332L) at **Vellore Institute of Technology, Chennai**, submitted in **April 2025**.
+## 📌 Overview
+
+This project addresses the problem of **road segmentation from satellite imagery** — a critical task in urban planning, autonomous driving, and infrastructure monitoring. We trained and deployed three semantic segmentation models that detect roads from RGB satellite images and output binary or probabilistic masks.
+
+The app allows users to:
+- Upload a satellite image
+- Choose between binary or soft masks
+- Get results from 3 different models side-by-side
+- Test with preloaded example images
+
+---
+
+## 🚀 Demo
+
+👉 **[Try the Live App Here](https://huggingface.co/spaces/AdityaK-27/road-segmentation-app)**  
+No sign-in required. Preloaded examples available.
+
+---
+
+## 🧠 Models Used
+
+### 1️⃣ U-Net
+A well-known encoder-decoder architecture with skip connections. Trained for 8 epochs using the DeepGlobe Road Extraction dataset.
+
+- ✅ Fast and interpretable  
+- ⚠️ Struggles with road discontinuities in complex images
+
+### 2️⃣ Custom CNN
+A lightweight architecture designed for fast inference and reduced computational load. Trained for 25 epochs.
+
+- ✅ Efficient for quick prototyping  
+- ⚠️ Occasionally misclassifies background as road (false positives)
+
+### 3️⃣ Self-Attention U-Net
+An advanced U-Net variant that incorporates self-attention layers to capture long-range dependencies. Trained for 25 epochs.
+
+- ✅ Best overall performance in terms of segmentation accuracy and road continuity  
+- ⚠️ Slower inference due to attention complexity
 
 ---
 
@@ -27,121 +62,70 @@ The study is part of the Deep Learning course (BCSE332L) at **Vellore Institute 
 
 ---
 
-## 🧠 Model Architectures
+## 🛠️ Deployment Details
 
-| Model               | Description |
-|--------------------|-------------|
-| **U-Net**           | Baseline encoder-decoder with skip connections |
-| **Custom CNN**      | Lightweight model built from scratch |
-| **ResUNet**         | U-Net enhanced with residual connections |
-| **VGG16 U-Net**     | U-Net decoder with a pretrained VGG16 encoder |
-| **Self-Attention U-Net** | U-Net with self-attention mechanism to capture global dependencies |
+### 🔧 Frameworks and Tools
+- TensorFlow / Keras
+- Gradio for the front-end UI
+- Hugging Face Spaces for hosting
+- PIL & NumPy for image processing
 
----
+### 📁 Folder Structure (for GitHub repo)
 
-## ⚙️ Implementation Details
+```
+├── app.py
+├── model/
+│ ├── unet_model.h5
+│ ├── custom_cnn_model-25.h5
+│ └── u_netself_attention-25.h5
+├── sample_inputs/
+│ └── [example satellite images]
+├── requirements.txt
+├── README.md
 
-- **Input Size:** 256x256 (or 224x224 for VGG16)  
-- **Normalization:** RGB images scaled to `[0, 1]`  
-- **Loss Function:** Binary Crossentropy (BCE), Dice Loss (optional)  
-- **Optimization:** Adam / SGD  
-- **Augmentation:** Applied during runtime via a custom data generator  
-- **Training Platform:** Google Colab (TPU/GPU enabled)  
-
-### 🧪 Training Setup
-
-| Model               | Batch Size | Epochs | Optimizer | Notes |
-|--------------------|------------|--------|-----------|-------|
-| U-Net              | 8          | 50     | Adam      | Baseline |
-| Custom CNN         | 16         | 40     | SGD       | Fast training |
-| ResUNet            | 8          | 30     | Adam      | Deeper network |
-| VGG16 U-Net        | 4          | 35     | Adam      | Transfer learning |
-| Self-Attention U-Net | 4        | 30     | Adam      | Highest accuracy |
+yaml
+Copy
+Edit
+```
 
 ---
 
-## 📈 Evaluation Metrics
+## 🧪 How to Run Locally
 
-- **Intersection over Union (IoU)** – Primary metric for segmentation accuracy
-- **Pixel-wise Accuracy** – Secondary metric (less reliable in imbalanced datasets)
-
----
-
-## 🖼️ Results
-
-### 🔢 Quantitative Evaluation
-
-| Model               | IoU (Trend) | Comments |
-|--------------------|-------------|----------|
-| U-Net              | Moderate    | Struggled with thin roads |
-| Custom CNN         | Fair        | Lightweight but prone to false positives |
-| ResUNet            | Moderate    | Better edges, limited by fewer epochs |
-| VGG16 U-Net        | High        | Sharp boundaries, slightly over-segmented |
-| Self-Attention U-Net | Excellent | Best road continuity and precision |
-
-### 📸 Qualitative Insights
-- **U-Net:** Missed thinner roads  
-- **Custom CNN:** Occasionally confused non-road areas  
-- **ResUNet:** Incomplete road detection  
-- **VGG16 U-Net:** Very sharp edges, sometimes too eager  
-- **Self-Attention U-Net:** Precise and connected roads with long-range spatial awareness
-
----
-
-## 🧾 Key Learnings
-
-- Self-attention improves global context understanding
-- Transfer learning boosts early-stage performance
-- Lightweight models are suitable for constrained environments but less accurate
-- Residual connections improve edge preservation
-
----
-
-## 🚧 Limitations
-
-- Limited epochs for ResUNet & VGG16 U-Net due to resource constraints
-- No deployment or GIS integration (yet)
-- Evaluation limited to IoU and pixel accuracy
-
----
-
-## 🚀 Future Work
-
-- Incorporate **Transformer-based segmentation models**
-- Post-processing with **Conditional Random Fields (CRF)**
-- **Model ensembling** for robust predictions
-- Real-time deployment with **GIS integration**
-
----
-
-## 📁 Repository Structure
+Clone the repository and run the app locally:
 
 ```bash
-.
-├── models/
-│   ├── unet.ipynb
-│   ├── custom_cnn.ipynb
-│   ├── resunet.ipynb
-│   ├── vgg16_unet.ipynb
-│   └── self_attention_unet.ipynb
-├── data/
-│   ├── train/
-│   ├── val/
-│   └── test/
-├── utils/
-│   ├── data_generator.py
-│   └── preprocessing.py
-├── results/
-│   ├── predictions/
-│   └── comparisons/
-├── README.md
-└── requirements.txt
+git clone https://github.com/AdityaK-27/Road-Extraction-DL.git
+cd Road-Extraction-DL
+pip install -r requirements.txt
+python app.py
 ```
-## 👨‍💻 Author
-- Aditya Kankarwal
-- 📍 Electronics and Computer Engineering
-- 🧑‍🎓 VIT Chennai | 22BLC1269
-- 📅 April 2025
 
-- Special thanks to Ms. Suchita M (Deep Learning Faculty), and teammates Manan & Harsh for collaboration and support.
+The app will launch at `http://localhost:7860`.
+
+---
+
+## 📷 Sample Images
+
+The app includes a collection of real satellite images for quick testing. These are located in the `sample_inputs/` folder and automatically loaded into the interface for one-click evaluation.
+
+---
+
+## 📈 Performance Summary
+
+| Model                 | Epochs | Strengths                        | Limitations                        |
+|----------------------|--------|----------------------------------|------------------------------------|
+| U-Net                | 8      | Simple, effective on clean inputs | Misses disconnected roads          |
+| Custom CNN           | 25     | Fast and efficient               | False positives on non-road objects|
+| Self-Attention U-Net | 25     | Best segmentation and continuity | Slower inference time              |
+
+---
+
+## 📚 Acknowledgements
+
+This project was developed as part of the Deep Learning course at **VIT Chennai**.
+
+- **Student**: Aditya Kankarwal (22BLC1269)  
+- **Instructor**: Ms. Suchita M  
+- **Dataset**: DeepGlobe Road Extraction Challenge
 
